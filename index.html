@@ -1,54 +1,207 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دنیای بازی</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Tahoma, sans-serif;
-      background: #090b18;
-      color: white;
-      text-align: center;
-      padding: 30px 15px;
-    }
-    .box {
-      max-width: 500px;
-      margin: 35px auto;
-      padding: 25px;
-      background: #171c36;
-      border: 1px solid #a855f7;
-      border-radius: 20px;
-      box-shadow: 0 0 25px #7c3aed55;
-    }
-    h1 { color: #c084fc; }
-    p { color: #cbd5e1; line-height: 2; }
-    button {
-      background: linear-gradient(90deg, #9333ea, #2563eb);
-      color: white;
-      border: 0;
-      border-radius: 12px;
-      padding: 13px 22px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دنیای بازی</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#100d1c;color:#f7f3ff;font-family:Tahoma,Arial,sans-serif}
+header{padding:22px 16px;background:linear-gradient(120deg,#35225b,#172e2a);display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:25px;margin:0}
+.coins{padding:13px;background:#171225;border:1px solid #7660a0;border-radius:14px;font-size:17px}
+main{max-width:950px;margin:auto;padding:18px 14px 115px}
+.page{display:none}.page.active{display:block}
+.card{background:#1e1930;border:1px solid #392c50;border-radius:20px;padding:20px;margin-bottom:15px}
+h2{font-size:24px}h3{font-size:21px}
+p{line-height:2;color:#c9bfde}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.icon{font-size:45px}
+button,input{font:inherit}
+button{border:0;border-radius:14px;background:#9471f5;color:white;padding:15px;font-size:18px;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.12)}
+.primary{background:#6ee7a0;color:#102016}
+input{width:100%;padding:14px;margin:8px 0 16px;background:#151123;color:white;border:1px solid #4a3d65;border-radius:12px;font-size:17px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;gap:7px;padding:10px;background:#171224;border-top:1px solid #49365f;z-index:5}
+nav button{flex:1;min-width:0;min-height:68px;padding:10px 5px;background:#29213d;font-size:17px;line-height:1.6}
+nav button.active{background:#4a356c;color:#6ee7a0}
+.status{text-align:center;color:#6ee7a0;line-height:2}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:320px;margin:20px auto}
+.cell{height:90px;font-size:34px;background:#352849}
+.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:380px;margin:20px auto}
+.memory button{padding:10px;font-size:28px;min-height:65px}
+footer{text-align:center;color:#b9b0ce;padding:20px}
+@media(max-width:520px){
+h1{font-size:20px}.coins{font-size:14px;padding:10px}
+nav{gap:5px;padding:7px 4px}
+nav button{font-size:15px;min-height:65px;padding:8px 2px}
+.card{padding:15px}h2{font-size:22px}
+}
+</style>
 </head>
 <body>
-  <div class="box">
-    <h1>🎮 دنیای بازی</h1>
-    <p>به دنیای بازی خوش اومدی!</p>
-    <p>برای شروع ماجراجویی آماده‌ای؟</p>
-    <button onclick="startGame()">شروع بازی 🚀</button>
-    <p id="message"></p>
-  </div>
+<header>
+<h1>🎮 دنیای بازی</h1>
+<div class="coins">🪙 سکه: <b id="coins">۰</b></div>
+</header>
 
-  <script>
-    function startGame() {
-      document.getElementById("message").textContent =
-        "🎉 به‌زودی بازی‌های جذاب اضافه می‌شن!";
-    }
-  </script>
+<main>
+<section id="games" class="page active">
+<h2>🎮 بازی‌ها</h2>
+<div class="grid">
+<div class="card"><div class="icon">⭕</div><h3>بازی دوز</h3><p>حریف رایانه‌ای را شکست بده و ۳ سکه بگیر.</p><button onclick="startTic()">شروع بازی</button></div>
+<div class="card"><div class="icon">🧠</div><h3>بازی حافظه</h3><p>جفت کارت‌های یکسان را پیدا کن.</p><button onclick="startMemory()">شروع بازی</button></div>
+<div class="card"><div class="icon">♟️</div><h3>شطرنج</h3><p>بازی شطرنج با قوانین کامل به اتصال کتابخانه آنلاین نیاز دارد.</p><button onclick="startChess()">شروع شطرنج</button></div>
+</div>
+</section>
+
+<section id="tic" class="page">
+<div class="card"><h2>⭕ بازی دوز</h2><p id="ticStatus" class="status">نوبت توست؛ X بازی کن.</p><div id="ticBoard" class="board"></div><button onclick="startTic()">بازی دوباره</button></div>
+</section>
+
+<section id="memory" class="page">
+<div class="card"><h2>🧠 بازی حافظه</h2><p id="memStatus" class="status">همه جفت‌ها را پیدا کن.</p><div id="memBoard" class="memory"></div><button onclick="startMemory()">شروع دوباره</button></div>
+</section>
+
+<section id="chess" class="page">
+<div class="card"><h2>♟️ شطرنج</h2><p id="chessStatus" class="status">برای شطرنج با قوانین کامل، اتصال اینترنت لازم است.</p><button onclick="show('games')">بازگشت به بازی‌ها</button></div>
+</section>
+
+<section id="store" class="page">
+<h2>💎 فروشگاه جم</h2>
+<div class="grid">
+<div class="card"><div class="icon">💎</div><h3>۲۰۰ جم</h3><p>قیمت: ۸۰۰ سکه</p><button class="primary" onclick="buy(200,800)">خرید ۲۰۰ جم</button></div>
+<div class="card"><div class="icon">💎💎</div><h3>۵۰۰ جم</h3><p>قیمت: ۱۱۰۰ سکه</p><button class="primary" onclick="buy(500,1100)">خرید ۵۰۰ جم</button></div>
+</div>
+<p id="storeStatus"></p>
+</section>
+
+<section id="support" class="page">
+<h2>🎧 پشتیبانی</h2>
+<div class="card"><h3>ارسال درخواست</h3>
+<label>موضوع</label><input id="topic" placeholder="موضوع درخواست">
+<label>پیام</label><input id="message" placeholder="پیام خود را بنویس">
+<button class="primary" onclick="sendSupport()">ثبت درخواست</button>
+<p id="supportStatus"></p></div>
+</section>
+
+<section id="profile" class="page">
+<h2>👤 تنظیمات پروفایل</h2>
+<div class="card">
+<label>نام (اجباری)</label><input id="first" placeholder="نام">
+<label>نام خانوادگی</label><input id="last" placeholder="نام خانوادگی">
+<label>آیدی روبیکا</label><input id="rubika" placeholder="@RubikaID">
+<button class="primary" onclick="saveProfile()">ذخیره پروفایل</button>
+<p id="profileStatus"></p>
+</div>
+</section>
+<footer>دنیای بازی</footer>
+</main>
+
+<nav>
+<button class="active" data-page="games" onclick="show('games')">🎮 بازی‌ها</button>
+<button data-page="store" onclick="show('store')">💎 فروشگاه</button>
+<button data-page="support" onclick="show('support')">🎧 پشتیبانی</button>
+<button data-page="profile" onclick="show('profile')">👤 پروفایل</button>
+</nav>
+
+<script>
+const $=id=>document.getElementById(id);
+function show(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+}
+let coins=Number(localStorage.getItem('worldCoins')||0);
+function updateCoins(){$('coins').textContent=coins.toLocaleString('fa-IR');localStorage.setItem('worldCoins',coins)}
+function reward(game,round){
+ let key='worldReward_'+game+'_'+round;
+ if(localStorage.getItem(key))return;
+ localStorage.setItem(key,'1');coins+=3;updateCoins();
+ alert('آفرین! ۳ سکه برای برد دریافت کردی.');
+}
+updateCoins();
+
+function buy(gems,price){
+ if(coins<price){$('storeStatus').textContent='سکه کافی نداری؛ با بردن بازی‌ها ۳ سکه بگیر.';return}
+ if(!confirm('خرید '+gems+' جم با '+price+' سکه؟'))return;
+ coins-=price;updateCoins();
+ $('storeStatus').textContent='درخواست در این نسخه آزمایشی ثبت شد؛ ارسال واقعی جم نیازمند سامانه پشتیبانی است.';
+ saveRequest('خرید '+gems+' جم با '+price+' سکه');
+}
+function saveProfile(){
+ if(!$('first').value.trim()){$('profileStatus').textContent='نام را وارد کن.';return}
+ localStorage.setItem('worldProfile',JSON.stringify({first:$('first').value,last:$('last').value,rubika:$('rubika').value}));
+ $('profileStatus').textContent='پروفایل ذخیره شد.';
+}
+function saveRequest(text){
+ let a=JSON.parse(localStorage.getItem('worldRequests')||'[]');
+ a.push({text,time:new Date().toLocaleString('fa-IR')});
+ localStorage.setItem('worldRequests',JSON.stringify(a));
+}
+function sendSupport(){
+ if(!$('topic').value.trim()||!$('message').value.trim()){$('supportStatus').textContent='موضوع و پیام را وارد کن.';return}
+ saveRequest($('topic').value+': '+$('message').value);
+ $('supportStatus').textContent='درخواست در همین مرورگر ذخیره شد؛ ارسال واقعی نیازمند اتصال سرور است.';
+}
+
+/* بازی دوز با حریف رایانه‌ای */
+let t=[],tRound=0,tDone=false;
+function startTic(){show('tic');t=Array(9).fill('');tRound++;tDone=false;$('ticStatus').textContent='نوبت توست؛ X بازی کن.';drawTic()}
+function drawTic(){
+ $('ticBoard').innerHTML='';
+ t.forEach((v,i)=>{let b=document.createElement('button');b.className='cell';b.textContent=v;b.onclick=()=>ticMove(i);$('ticBoard').appendChild(b)});
+}
+function win(b){
+ for(let [a,c,d] of [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]])if(b[a]&&b[a]===b[c]&&b[c]===b[d])return b[a];
+ return b.every(Boolean)?'draw':null;
+}
+function solve(b,ai){
+ let w=win(b);if(w==='O')return 10;if(w==='X')return -10;if(w==='draw')return 0;
+ let scores=[];
+ for(let i=0;i<9;i++)if(!b[i]){b[i]=ai?'O':'X';scores.push({i,s:solve(b,!ai)});b[i]=''}
+ if(ai)return scores.sort((a,b)=>b.s-a.s)[0]?.s??0;
+ return scores.sort((a,b)=>a.s-b.s)[0]?.s??0;
+}
+function ticMove(i){
+ if(tDone||t[i])return;t[i]='X';let w=win(t);
+ if(w){endTic(w);return}
+ let choices=[];
+ for(let j=0;j<9;j++)if(!t[j]){t[j]='O';choices.push({i:j,s:solve(t,false)});t[j]=''}
+ choices.sort((a,b)=>b.s-a.s);if(choices.length)t[choices[0].i]='O';
+ w=win(t);if(w)endTic(w);else $('ticStatus').textContent='نوبت توست.';
+ drawTic();
+}
+function endTic(w){
+ tDone=true;drawTic();
+ if(w==='X'){$('ticStatus').textContent='بردی! ۳ سکه گرفتی.';reward('tic',tRound)}
+ else if(w==='O')$('ticStatus').textContent='رایانه برد؛ این دور سکه ندارد.';
+ else $('ticStatus').textContent='مساوی شد؛ این دور سکه ندارد.';
+}
+
+/* بازی حافظه */
+let cards=[],opened=[],found=[],mRound=0,locked=false;
+function startMemory(){
+ show('memory');mRound++;cards=['🍎','🍎','🚀','🚀','🐱','🐱','⚽','⚽','🌟','🌟','🎵','🎵','🍀','🍀','🎈','🎈'].sort(()=>Math.random()-.5);
+ opened=[];found=[];locked=false;$('memStatus').textContent='جفت کارت‌ها را پیدا کن.';drawMemory();
+}
+function drawMemory(){
+ $('memBoard').innerHTML='';
+ cards.forEach((v,i)=>{let b=document.createElement('button');b.textContent=found.includes(i)||opened.includes(i)?v:'?';b.onclick=()=>flip(i);$('memBoard').appendChild(b)});
+}
+function flip(i){
+ if(locked||found.includes(i)||opened.includes(i))return;
+ opened.push(i);drawMemory();
+ if(opened.length===2){
+  locked=true;
+  if(cards[opened[0]]===cards[opened[1]]){
+   found.push(...opened);opened=[];locked=false;drawMemory();
+   if(found.length===cards.length){$('memStatus').textContent='برنده شدی! ۳ سکه گرفتی.';reward('memory',mRound)}
+  }else setTimeout(()=>{opened=[];locked=false;drawMemory()},800);
+ }
+}
+function startChess(){show('chess');$('chessStatus').textContent='بخش شطرنج برای اجرای قوانین کامل و هوش مصنوعی نیازمند اتصال به کتابخانه شطرنج است.'}
+</script>
 </body>
 </html>
